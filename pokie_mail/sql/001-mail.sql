@@ -1,3 +1,5 @@
+CREATE EXTENSION pgcrypto;
+
 CREATE TABLE message_template(
     id_message_template SERIAL NOT NULL PRIMARY KEY,
     template VARCHAR(128) NOT NULL,

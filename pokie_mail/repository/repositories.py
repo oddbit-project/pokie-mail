@@ -16,6 +16,7 @@ class MessageQueueRepository(Repository):
             .where(MessageQueueRecord.status, "=", status)
             .where(MessageQueueRecord.channel, "=", channel)
             .limit(limit)
+            .assemble()
         )
 
         with self._db.cursor() as c:
@@ -34,6 +35,7 @@ class MessageQueueRepository(Repository):
     ) -> Optional[MessageQueueRecord]:
         """
         Locks a queued message and returns the record
+        :param channel:
         :param status: previous status of record to be locked
         :return:
         """

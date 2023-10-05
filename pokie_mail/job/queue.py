@@ -16,23 +16,29 @@ from pokie_mail.service import MessageQueueService
 
 
 class MailJob(Injectable, Runnable):
+    DEFAULT_MAILS_PER_RUN = 10000
+
     def __init__(self, di: Di):
         super().__init__(di)
         self.tty = di.get(DI_TTY) if di.has(DI_TTY) else ConsoleWriter()
+        self.mails_per_run = di.get(DI_CONFIG).get(
+            "mails_per_run", self.DEFAULT_MAILS_PER_RUN
+        )
 
+    @property
     def get_smtp_mailer(self) -> Mailer:
         config = self.get_di().get(DI_CONFIG).asdict()
         return Mailer(SMTPFactory(config))
 
+    @property
+    def svc_queue(self) -> MessageQueueService:
+        return self.get_di().get(DI_SERVICES).get(SVC_MESSAGE_QUEUE)
+
 
 class MailQueueJob(MailJob):
-    MAILS_PER_RUN = 10000
-
-    @property
     def run_smtp(self):
         total = 0
-        mailer = self.get_smtp_mailer()
-        while total < self.MAILS_PER_RUN:
+        while total < self.mails_per_run:
             record = self.svc_queue.fetch_for_processing(CHANNEL_SMTP)
             if record is None:
                 # no more messages, exit
@@ -40,7 +46,7 @@ class MailQueueJob(MailJob):
 
             try:
                 if (
-                    mailer.send_mail(
+                    self.get_smtp_mailer.send_mail(
                         record.title,
                         record.content,
                         record.msg_from,
@@ -59,8 +65,4 @@ class MailQueueJob(MailJob):
 
     def run(self, di: Di):
         # run smtp - channel 0
-        return self.run_smtp
-
-    @property
-    def svc_queue(self) -> MessageQueueService:
-        return self.get_di().get(DI_SERVICES).get(SVC_MESSAGE_QUEUE)
+        return self.run_smtp()

@@ -3,11 +3,29 @@ from pokie.config.template import BaseConfigTemplate, PgConfigTemplate, TestConf
 from pokie.core import FlaskApplication
 from pokie.core.factories.pgsql import PgSqlFactory
 
+from pokie_mail.config import MailConfigTemplate
+
 
 # base configuration
-class Config(EnvironmentConfig, BaseConfigTemplate, PgConfigTemplate, TestConfigTemplate):
+class Config(EnvironmentConfig, BaseConfigTemplate, PgConfigTemplate, TestConfigTemplate, MailConfigTemplate):
     TEST_MANAGE_DB = True
     TEST_DB_SSL = False
+
+    # number of emails to send at once
+    MAILS_PER_RUN = 10000
+
+    # SMTP Configuration [to use with mailhog]
+    SMTP_HOST = "localhost"
+    SMTP_PORT = 1025
+    SMTP_USE_TLS = False
+    SMTP_USE_SSL = False
+    SMTP_DEBUG = False
+    SMTP_USERNAME = ""
+    SMTP_PASSWORD = ""
+    SMTP_DEFAULT_SENDER = None
+    SMTP_TIMEOUT = None
+    SMTP_SSL_KEYFILE = None
+    SMTP_SSL_CERTFILE = None
 
 
 def build_pokie():
