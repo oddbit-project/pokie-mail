@@ -1,18 +1,19 @@
 import json
 import re
 
+from pokie_mail.constants import STATUS_DRAFT
 from pokie_mail.dto import MessageTemplateRecord, MessageQueueRecord
-from pokie_mail.service import MessageQueueService
 
 
 class MessageBuilder:
     def __init__(self, template: MessageTemplateRecord):
         self.template = template
 
-    def assemble(self, msg_from, msg_to, data: dict):
-        message = MessageQueueRecord(
-            channel=self.template.channel, status=MessageQueueService.STATUS_QUEUED
-        )
+    def assemble(self, msg_from, msg_to, data: dict = None):
+        message = MessageQueueRecord(channel=self.template.channel, status=STATUS_DRAFT)
+        if data is None:
+            data = {}
+
         if len(self.template.placeholders) > 0:
             tmp = json.loads(self.template.placeholders)
             data = {**tmp, **data}

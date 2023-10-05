@@ -1,5 +1,6 @@
 from rick_db import fieldmapper
 
+
 @fieldmapper(tablename="message_template", pk="id_message_template", schema="public")
 class MessageTemplateRecord:
     id = "id_message_template"

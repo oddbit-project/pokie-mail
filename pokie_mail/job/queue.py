@@ -6,7 +6,12 @@ from rick.resource.console import ConsoleWriter
 from rick_mailer import Mailer, SMTPFactory
 
 from pokie.constants import DI_TTY, DI_SERVICES, DI_CONFIG
-from pokie_mail.constants import SVC_MESSAGE_QUEUE
+from pokie_mail.constants import (
+    SVC_MESSAGE_QUEUE,
+    CHANNEL_SMTP,
+    STATUS_SENT,
+    STATUS_FAILED,
+)
 from pokie_mail.service import MessageQueueService
 
 
@@ -23,13 +28,12 @@ class MailJob(Injectable, Runnable):
 class MailQueueJob(MailJob):
     MAILS_PER_RUN = 10000
 
+    @property
     def run_smtp(self):
         total = 0
         mailer = self.get_smtp_mailer()
         while total < self.MAILS_PER_RUN:
-            record = self.svc_queue.fetch_for_processing(
-                MessageQueueService.CHANNEL_SMTP
-            )
+            record = self.svc_queue.fetch_for_processing(CHANNEL_SMTP)
             if record is None:
                 # no more messages, exit
                 return True
@@ -45,21 +49,17 @@ class MailQueueJob(MailJob):
                     )
                     > 0
                 ):
-                    self.svc_queue.update_status(
-                        record.id, MessageQueueService.STATUS_SENT
-                    )
+                    self.svc_queue.update_status(record.id, STATUS_SENT)
             except Exception as e:
-                raise e
                 self.tty.error(str(e))
-                self.svc_queue.update_status(
-                    record.id, MessageQueueService.STATUS_FAILED
-                )
-                return False
+                self.svc_queue.update_status(record.id, STATUS_FAILED)
+                raise e
+
         return True
 
     def run(self, di: Di):
         # run smtp - channel 0
-        return self.run_smtp()
+        return self.run_smtp
 
     @property
     def svc_queue(self) -> MessageQueueService:
