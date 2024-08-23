@@ -22,8 +22,8 @@ class MessageQueueRepository(Repository):
         with self._db.cursor() as c:
             return c.fetchall(sql, values, self._record)
 
-    def update_status(self, id: str, status: str):
-        record = self.fetch_pk(id)
+    def update_status(self, id_record: str, status: str):
+        record = self.fetch_pk(id_record)
         if record is not None:
             record.status = status
             if status == "S":

@@ -59,7 +59,6 @@ class MailQueueJob(MailJob):
             except Exception as e:
                 self.tty.error(str(e))
                 self.svc_queue.update_status(record.id, STATUS_FAILED)
-                raise e
 
         return True
 
