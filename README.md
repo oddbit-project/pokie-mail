@@ -56,7 +56,7 @@ the default SMTP parameters if necessary:
 
 ```python
 from rick.resource.config import EnvironmentConfig
-from pokie.config.template import BaseConfigTemplate, PgConfigTemplate, TestConfigTemplate
+from pokie.config import PokieConfig
 from pokie.core import FlaskApplication
 from pokie.core.factories.pgsql import PgSqlFactory
 from pokie_mail.config import MailConfigTemplate
@@ -64,7 +64,7 @@ from pokie_mail.config import MailConfigTemplate
 
 # your application configuration
 
-class Config(EnvironmentConfig, BaseConfigTemplate, PgConfigTemplate, TestConfigTemplate, MailConfigTemplate):
+class Config(EnvironmentConfig, PokieConfig, MailConfigTemplate):
     # ==== Other configuration settings =====
     (...)
     
