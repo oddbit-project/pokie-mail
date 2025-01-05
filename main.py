@@ -1,5 +1,5 @@
 from rick.resource.config import EnvironmentConfig
-from pokie.config.template import BaseConfigTemplate, PgConfigTemplate, TestConfigTemplate
+from pokie.config import PokieConfig
 from pokie.core import FlaskApplication
 from pokie.core.factories.pgsql import PgSqlFactory
 
@@ -7,7 +7,7 @@ from pokie_mail.config import MailConfigTemplate
 
 
 # base configuration
-class Config(EnvironmentConfig, BaseConfigTemplate, PgConfigTemplate, TestConfigTemplate, MailConfigTemplate):
+class Config(EnvironmentConfig, PokieConfig, MailConfigTemplate):
     TEST_MANAGE_DB = True
     TEST_DB_SSL = False
 

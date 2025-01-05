@@ -19,7 +19,7 @@ class MessageQueueRepository(Repository):
             .assemble()
         )
 
-        with self._db.cursor() as c:
+        with self.cursor() as c:
             return c.fetchall(sql, values, self._record)
 
     def update_status(self, id_record: str, status: str):
@@ -49,15 +49,15 @@ class MessageQueueRepository(Repository):
         )
 
         sql, values = (
-            Update(self._dialect)
-            .table(self._tablename, self._schema)
+            Update(self.dialect)
+            .table(self.table_name, self.schema)
             .values({MessageQueueRecord.status: "L"})
             .where(MessageQueueRecord.id, "=", qry)
             .returning()
             .assemble()
         )
 
-        with self._db.cursor() as c:
+        with self.cursor() as c:
             result = c.fetchall(sql, values, self._record)
             if len(result) > 0:
                 return result[0]
@@ -65,9 +65,9 @@ class MessageQueueRepository(Repository):
 
     def truncate(self):
         sql = "TRUNCATE TABLE {}".format(
-            self.dialect().table(self._tablename, schema=self._schema)
+            self.dialect.table(self.table_name, schema=self.schema)
         )
-        with self._db.cursor() as c:
+        with self.cursor() as c:
             c.exec(sql)
 
 
@@ -87,5 +87,5 @@ class MessageTemplateRepository(Repository):
             .assemble()
         )
 
-        with self._db.cursor() as c:
+        with self.cursor() as c:
             return c.fetchone(sql, values, self._record)
