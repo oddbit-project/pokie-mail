@@ -1,6 +1,6 @@
 # Welcome to Pokie-mail
 
-[![Tests](https://github.com/oddbit-project/pokie-mail/workflows/Tests/badge.svg?branch=master)](https://github.com/oddbit-project/pokie-mail/actions)
+[![Tests](https://github.com/oddbit-project/pokie-mail/workflows/Tests/badge.svg)](https://github.com/oddbit-project/pokie-mail/actions)
 [![pypi](https://img.shields.io/pypi/v/pokie-mail.svg)](https://pypi.org/project/pokie-mail/)
 [![license](https://img.shields.io/pypi/l/pokie-mail.svg)](https://git.oddbit.org/OddBit/pokie-mail/src/branch/master/LICENSE)
 
